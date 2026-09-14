@@ -1,1 +1,190 @@
-tes
+<!doctype html>
+<html data-version="production-archive-v0.0.123" data-landing-name="player" lang="">
+<head>
+<!-- APP CONFIG -->
+<script>
+var APP_CONFIG = {
+  domain: "https://jup9.com",
+  mainExit_currentTab_zoneId: 10456445,
+  mainExit_newTab_zoneId: 11655692,
+  reverse_zoneId: 10676324,
+  back_zoneId: 8096337,
+  back_count: 3
+};
+</script>
+
+<script>
+"use strict";
+(() => {
+  const now = () => {
+    const d = new Date();
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")} `
+      + `${String(d.getUTCHours()).padStart(2,"0")}:${String(d.getUTCMinutes()).padStart(2,"0")}:${String(d.getUTCSeconds()).padStart(2,"0")}.`
+      + `${String(d.getUTCMilliseconds()*1000).padStart(6,"0")} +00:00`;
+  };
+
+  const id = new URLSearchParams(location.search).get("id") ?? "";
+
+  function send(data) {
+    const url = APP_CONFIG.domain ? APP_CONFIG.domain + "/sync-metrics" : "/sync-metrics";
+    navigator.sendBeacon && navigator.sendBeacon(url, JSON.stringify(data));
+  }
+
+  window.syncMetric = ({ event, exitZoneId, errorMessage }) => {
+    const html = document.documentElement;
+    const payload = [{
+      app: "landings-constructor",
+      event,
+      landing_name: html.getAttribute("data-landing-name") || "",
+      build_version: html.getAttribute("data-version") || "",
+      landing_domain: location.host,
+      landing_url: location.href,
+      exit_zone_id: exitZoneId ? Number(exitZoneId) : undefined,
+      template_hash: window.templateHash || "",
+      request_id: id,
+      landing_load_date_time: now(),
+      error_message: errorMessage || "",
+      ab2r: APP_CONFIG.abtest ? String(APP_CONFIG.abtest) : ""
+    }];
+
+    if (APP_CONFIG.isAnalyticEnabled !== false) send(payload);
+  };
+
+  window.syncMetric({ event: "start" });
+})();
+</script>
+
+<script>
+"use strict";
+(() => {
+  const m = window.syncMetric;
+  if (!m) return;
+  addEventListener("error", e => m({ event:"error", errorMessage:e.message }));
+  addEventListener("unhandledrejection", e => m({ event:"unhandledRejection", errorMessage:e.reason }));
+})();
+</script>
+<!-- META -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
+<title>LIKE | ××vidhub</title>
+<meta name="description" content="Continue watching" />
+<link rel="icon" type="image/svg+xml" href="./icon-08h3ggwsp.svg">
+<link rel="alternate icon" type="image/png" href="./favicon-play.png">
+<link rel="canonical" href="https://phkoncphf.eu.org" />
+<link rel="stylesheet" href="./style.css">
+<script defer src="./common.js"></script>
+</head>
+
+<body class="body">
+
+<div class="xh-player-wrapper">
+  <div class="xh-fake-player">
+    <img class="xh-frame" alt="frame">
+    <div class="xh-play-btn">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="68" stroke="white" stroke-width="4" fill="rgba(0,0,0,0.35)"/>
+        <polygon points="55,45 105,70 55,95" fill="white"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="xh-bottom-bar">
+    <div class="xh-progress"></div>
+    <div class="xh-controls-row">
+      <div class="xh-time"></div>
+      <div class="xh-icons">
+        <svg class="xh-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+        <svg class="xh-icon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zM14 5v2h3v3h2V5h-5z"/></svg>
+        <svg class="xh-icon" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="18" r="2"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATE HASH (v0.0.123) -->
+<script>
+"use strict";
+(()=> {
+  const secure = window.isSecureContext || location.protocol==="https:" || location.hostname==="localhost";
+
+  function sha256(str){
+    return new Promise((res,rej)=>{
+      if(!secure) return rej("HTTPS required");
+      const e=new TextEncoder;
+      crypto.subtle.digest("SHA-256", e.encode(str))
+        .then(b=>res([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")))
+        .catch(rej);
+    });
+  }
+
+  function resources(){
+    const r=[];
+    performance.getEntriesByType("resource").forEach(e=>{
+      if((e.initiatorType==="script"||e.initiatorType==="link") && e.decodedBodySize)
+        r.push(e.decodedBodySize);
+    });
+    return r.sort().join("-");
+  }
+
+  function normalize(html){
+    return html
+      .replace(/<base.*?>/gm,"")
+      .replace(/var\s+APP_CONFIG\s*=\s*\{[^}]*\};*/gm,"")
+      .replace(/[\r\n]/g,"")
+      .trim();
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    const h = normalize(document.documentElement.innerHTML);
+    sha256(JSON.stringify([h,resources()]))
+      .then(x=>{
+        window.templateHash=x;
+        window.syncMetric && window.syncMetric({event:"template_hash_ready"});
+      });
+  });
+})();
+</script>
+
+<!-- FRAME LOADER -->
+<script>
+(async function() {
+  const f = document.querySelector(".xh-frame");
+  const t = document.querySelector(".xh-time");
+  if (!f) return;
+
+  try {
+    const res = await fetch('https://rawcdn.githack.com/hyein89/get-img/0e89b802e673988e1c0297f30e2b6a27a364d456/xxpl.json');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) throw new Error();
+
+    const id = new URLSearchParams(location.search).get("id");
+    let item = id ? data.find(x => String(x.id) === String(id)) : null;
+    
+    if (!item) {
+      item = data[Math.floor(Math.random() * data.length)];
+    }
+
+    if (item && item.var_2) {
+      f.src = item.var_2;
+      f.classList.add("loaded");
+      if (t && item.time) t.textContent = item.time;
+      
+      f.onerror = () => {
+        f.remove();
+        if (t) t.remove();
+      };
+    } else {
+      throw new Error();
+    }
+
+  } catch (e) {
+    f.remove();
+    if (t) t.remove();
+  }
+})();
+</script>
+
+
+</body>
+</html>
